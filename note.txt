@@ -1,0 +1,15 @@
+Candidate:   ./projection -x xmap.pgm -y ymap.pgm -h 3264 -w 6528 -r 3264 -c 6528 -b 75 -m samsung_gear_360
+
+
+Candidate 2:   ./projection -x xmap.pgm -y ymap.pgm -h 3264 -w 6528 -r 3264 -c 6528 -b 0 -m samsung_gear_360
+
+
+Candidate 3:    ./projection -x xmap.pgm -y ymap.pgm -h 3064 -w 6528 -r 3064 -c 6528 -b 0 -m samsung_gear_360
+
+
+Candidate 4:    ./projection -x xmap.pgm -y ymap.pgm -h 3064 -w 6428 -r 3064 -c 6428 -b -10 -m samsung_gear_360
+
+Candidate 5:    ./projection -x xmap.pgm -y ymap.pgm -h 910 -w 1920 -r 910 -c 1920 -b 0 -m samsung_gear_360
+
+
+ffmpeg -i 0.png -i xmap.pgm -i ymap.pgm -filter_complex remap out.jpg
