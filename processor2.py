@@ -4,9 +4,37 @@ import cv2
 import subprocess
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument('--use_remapping', type=bool, default=True)
 parser.add_argument('--dir', type=str, required=True)
+parser.add_argument('--use_remapping', type=int, default=0, required=False, help='0 for no remapping, 1 for remapping')
 args=parser.parse_args()
+
+
+def gifer(out_directory, gif_name, fps=10):
+
+    if os.path.exists(gif_name+'.gif'):
+        os.system("rm -rf "+gif_name+".gif")
+
+    images = [img for img in os.listdir(out_directory) if img.endswith(".png")]
+
+
+    # Sort images by their integer values
+    images.sort(key=lambda x: int(os.path.splitext(x)[0].split('_')[-1]))
+
+    # Get the full path of each image
+    images = [os.path.join(out_directory, img) for img in images]
+
+    # print("\n\n")
+    # print(images)
+    # sfs
+
+    gif = []
+    for image in images:
+        gif.append(imageio.imread(image))
+
+    imageio.mimsave(gif_name, gif, fps=fps)
+
+    print("\nGif is created successfully!\n")
+
 
 # CONVErt insp to png
 #================================================================================================
@@ -48,7 +76,8 @@ os.remove('temp_image.jpg')
 
 # from pngs, convert to equirectangular
 #================================================================================================
-if not args.use_remapping:
+if args.use_remapping==0:
+
     directory=new_dir
 
     # Sort files by numeric order
@@ -74,8 +103,10 @@ if not args.use_remapping:
         # os.system(f'ffmpeg -i {filename} -filter_complex "[0:v]v360=input=dfisheye:output=equirect:pitch=-20:roll=-25:yaw=15:ih_fov=195:iv_fov=195:h_fov=195:v_fov=195[out_v]" -map "[out_v]" {new_directory}/im_{counter}.png')
         counter+=1
 
+    gifer(new_directory, new_directory.split('/')[-1]+'.gif', fps=3)
 
-else:
+
+elif args.use_remapping==1:
 
     directory=new_dir
 
@@ -103,20 +134,26 @@ else:
        
         img=cv2.imread(f'{new_directory}/im_{counter}.png')
        
-    img_left_cropped = img[:, :img.shape[1]//2]
-    img_right_cropped = img[:, img.shape[1]//2:img.shape[1]]
+        img_left_cropped = img[:, :img.shape[1]//2]
+        img_right_cropped = img[:, img.shape[1]//2:img.shape[1]]
 
 
-    new_img_right=img_left_cropped
-    #new_img_left=cv2.rotate(img_right_cropped, cv2.ROTATE_180)
-    new_img_left=img_right_cropped
+        new_img_right=img_left_cropped
+        #new_img_left=cv2.rotate(img_right_cropped, cv2.ROTATE_180)
+        new_img_left=img_right_cropped
 
-    # stich thr right half of the original image with the rotated image 
-    img_stiched = cv2.hconcat([new_img_left, new_img_right])
+        # stich thr right half of the original image with the rotated image 
+        img_stiched = cv2.hconcat([new_img_left, new_img_right])
 
-    cv2.imwrite(f'{new_directory}/im_{counter}.png', img_stiched)
+        cv2.imwrite(f'{new_directory}/im_{counter}.png', img_stiched)
 
-    counter+=1
+        counter+=1
+
+    gifer(new_directory, new_directory.split('/')[-1]+'.gif', fps=3)
+
+else:
+    print('Invalid value for use_remapping. Use 0 for no remapping, 1 for remapping')
+    exit(1)
 
 
      
