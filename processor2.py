@@ -103,20 +103,20 @@ else:
        
         img=cv2.imread(f'{new_directory}/im_{counter}.png')
        
-	img_left_cropped = img[:, :img.shape[1]//2]
-	img_right_cropped = img[:, img.shape[1]//2:img.shape[1]]
+    img_left_cropped = img[:, :img.shape[1]//2]
+    img_right_cropped = img[:, img.shape[1]//2:img.shape[1]]
 
 
-	new_img_right=img_left_cropped
-	#new_img_left=cv2.rotate(img_right_cropped, cv2.ROTATE_180)
-	new_img_left=img_right_cropped
+    new_img_right=img_left_cropped
+    #new_img_left=cv2.rotate(img_right_cropped, cv2.ROTATE_180)
+    new_img_left=img_right_cropped
 
-	# stich thr right half of the original image with the rotated image 
-	img_stiched = cv2.hconcat([new_img_left, new_img_right])
+    # stich thr right half of the original image with the rotated image 
+    img_stiched = cv2.hconcat([new_img_left, new_img_right])
 
-        cv2.imwrite(f'{new_directory}/im_{counter}.png', img_stiched)
+    cv2.imwrite(f'{new_directory}/im_{counter}.png', img_stiched)
 
-        counter+=1
+    counter+=1
 
 
      
